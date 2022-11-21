@@ -32,25 +32,20 @@ public class Task1 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String inputData = sc.nextLine();
         List<Paragraph> paragraphs = new ArrayList<>();
         StringBuilder text = new StringBuilder();
         int cnt = 0;
-        for (int i = 0;i < inputData.length();i++){
-            char curChar = inputData.charAt(i);
-            if (curChar == '\n'){
-                paragraphs.add(new Paragraph(text.toString(), cnt));
-                text = new StringBuilder();
-                cnt = 0;
+        while (sc.hasNext()) {
+            String inputData = sc.nextLine();
+            for (int i = 0; i < inputData.length(); ++i) {
+                char curChar = inputData.charAt(i);
+                    if (curChar == ' ') {
+                        cnt++;
+                    }
+                    text.append(curChar);
             }
-            else {
-                if (curChar == ' ' ){
-                    cnt++;
-                }
-                text.append(curChar);
-            }
+            paragraphs.add(new Paragraph(text.toString(),++cnt));
         }
-        paragraphs.add(new Paragraph(text.toString(),++cnt));
         for (Paragraph paragraph : paragraphs) {
             System.out.println(paragraph.getWords() + '\n' + paragraph.getAmountOfWords());
         }
