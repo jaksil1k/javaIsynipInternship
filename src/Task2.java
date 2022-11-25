@@ -69,7 +69,7 @@ public class Task2 {
     private static String getInput(String text) throws IOException {
 
 
-        final URL url = new URL("https://localhost:9200/tak2/search/" + text);
+        final URL url = new URL("http://localhost:9200/tak2/_search" + text);
         final HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
 
@@ -77,6 +77,12 @@ public class Task2 {
         con.setRequestProperty("Content-Type", "application/json");
         con.setConnectTimeout(CONNECTION_TIMEOUT);
         con.setReadTimeout(CONNECTION_TIMEOUT);
+        con.setDoOutput(true);
+
+        BufferedWriter httpRequestBodyWriter =
+                new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        httpRequestBodyWriter.write("{ \"text': \": \"" + text + "\" }");
+        httpRequestBodyWriter.close();
 
 
         try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
@@ -95,15 +101,16 @@ public class Task2 {
 
     private static void sendRequest(String text) throws IOException {
 
-        final URL url = new URL("https://localhost:9200/task2/" + text);
+        final URL url = new URL("http://localhost:9200/task2/_doc/2");
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setDoOutput(true);
-        urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestMethod("PUT");
+        urlConnection.setRequestProperty("Content-Type", "application/json");
 
         // Writing the post data to the HTTP request body
         BufferedWriter httpRequestBodyWriter =
                 new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-        httpRequestBodyWriter.write("text=" + text);
+        httpRequestBodyWriter.write("{ \"text': \": \"" + text + "\" }");
         httpRequestBodyWriter.close();
 
         // Reading from the HTTP response body
