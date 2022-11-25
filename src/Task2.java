@@ -9,61 +9,32 @@ public class Task2 {
     private static final int CONNECTION_TIMEOUT = 5000;
 
     public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        String text = scanner.nextLine();
-        String nextWord = "", nextText = "";
-        boolean isE = false;
-        for (int i = 0;i < text.length();++i){
-            if (text.charAt(i) == '-'){
-                i++;
-                if (text.charAt(i) == 'e'){
-                    i += 2;
-                    nextWord = findWord(text, i);
-                    isE = true;
-                    i += nextWord.length();
-                }
-                else if (text.charAt(i) == 's'){
-                    if (!isE){
-                        throw new IOException("firstly -e <method> then -s <text>");
-                    }
-                    i += 2;
-                    nextText = findText(text, i);
-                    break;
-                }
-                else {
-                    throw new IOException("no such command");
+
+        String command  = "", text = "";
+
+        boolean isE = false, isS = false;
+        for (String s : args){
+            if (s.equals("-e")){
+                isE = true;
+            }else if (s.equals("-s")){
+                isS = true;
+            }else {
+                if (isE){
+                    command = s;
+                } else if (isS){
+                    text = s;
+                } else {
+                    throw new IOException("unknown command");
                 }
             }
         }
-        if (nextWord.equals("add")) {
-            sendRequest(nextText);
-        } else if (nextWord.equals("search")){
-            System.out.println(getInput(nextText));
+
+        if (command.equals("add")) {
+            sendRequest(text);
+        } else if (command.equals("search")){
+            System.out.println(getInput(text));
         }
 
-    }
-
-    private static String findText(String text, int i) {
-        StringBuilder ans = new StringBuilder("");
-
-        for (;i < text.length();i++){
-            char a = text.charAt(i);
-            ans.append(a);
-        }
-
-        return ans.toString();
-    }
-
-    private static String findWord(String text, int i) {
-        StringBuilder ans = new StringBuilder("");
-        for (;i < text.length();i++){
-            char a = text.charAt(i);
-            if (a == ' '){
-                return ans.toString();
-            }
-            ans.append(a);
-        }
-        return ans.toString();
     }
 
     private static String getInput(String text) throws IOException {
@@ -116,7 +87,7 @@ public class Task2 {
         // Reading from the HTTP response body
         Scanner httpResponseScanner = new Scanner(urlConnection.getInputStream());
         while(httpResponseScanner.hasNextLine()) {
-            System.out.println(httpResponseScanner.nextLine());
+            System.out.printf(httpResponseScanner.nextLine());
         }
         httpResponseScanner.close();
     }
